@@ -1,56 +1,53 @@
 class Encryptor
   def initialize(string, key = 12345, date = 101317)
     @string = string.split('')
-    @key =   key.to_s.split('')
+    @key =  key.to_s.split('')
     @date = date
     @offset_precursor = nil
     @rot = []
+    @alpha_index = []
+    @alpha = []
     @alphabet = ["a","b","c","d","e","f","g","h","i","j",
       "k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
   end
 
   def offset_key
-    date_squared = @date ** 2
-    @offset_precursor = date_squared.to_s.split('').last(4).to_a
-end
-def looper
-   @offset_precursor.each_with_index do |x,i|
-   @rot.push([@key[i],@key[i+1]].join.to_i + @offset_precursor[i].to_i)
+      date_squared = @date ** 2
+      @offset_precursor = date_squared.to_s.split('').last(4).to_a
   end
-end
+  def key_date
+     @offset_precursor.each_with_index do |x,i|
+     @rot.push([@key[i],@key[i+1]].join.to_i + @offset_precursor[i].to_i)
+    end
+   p @rot = @rot*@string.length
+  end
 
-
-def string_to _index
- alpha_index = []
-  @alpha = []
-  @string.length.times do | index|
-  @alphabet.each_with_index do |x,i|
-     if @string[index] == @alphabet[i-1]
-       alpha_index.push( @rot[0] + (i % 26))
-       alpha_index.push( @rot[1] + (i % 26))
-       alpha_index.push( @rot[2] + (i % 26))
-       alpha_index.push( @rot[3] + (i % 26))
+  def string_to_index
+    @string.each_with_index do |letter,index|
+      @alphabet.each_with_index do |x,i|
+         if @string[index] == @alphabet[i-1] %26
+           @alpha_index << i
+         end
+      end
     end
   end
-end
-   alpha_index.each_with_index do |x, i|
-     if i % 4 == 0
-    @alpha << alpha_index.slice!(i)
-   end
- end
- # p @alpha
-end
 
-def match
-    @alpha.length.times do | num|
-      @alphabet.each_with_index do |x,i|
-        if @alpha[num] % 26 == i+1
-      p x
-      end
+  def add_offset
+    @alpha_index.each_with_index do |x,i|
+    @alpha.push(@alpha_index[i] + @rot[i])
+   end
   end
-end
-end
+
+  def encrypt
+    @alpha.each_with_index do |num, index|
+        @alphabet.each_with_index do |x,i|
+          if  num %26 == i+1
+                p x
+          end
+        end
+    end
+  end
 end
 
 #   if @string[index] == @alphabet[i-1]
@@ -129,12 +126,9 @@ end
 #     p  key_rot_a + offset_rot_a
 # end
 
-encrypt = Encryptor.new("hellosd")
+encrypt = Encryptor.new("hello")
 encrypt.offset_key
-# encrypt.rot_a
-# encrypt.rot_b
-# encrypt.rot_c
-# encrypt.rot_d
-encrypt.looper
+encrypt.key_date
 encrypt.string_to_index
-encrypt.match
+encrypt.add_offset
+encrypt.encrypt
