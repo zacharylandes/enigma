@@ -43,7 +43,7 @@ class Encryptor
     @alpha.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
           if  num %26 == i+1
-                p x
+                x
           end
         end
     end
