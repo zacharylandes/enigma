@@ -27,8 +27,8 @@ def test_it_can_add_letter_index_to_rotation
 end
 
 def test_it_can_encrypt
-  encryption = "x5o04"
-  encrypt = Encryptor.new("hello")
+  encryption = "x5o04zbt34bn"
+  encrypt = Encryptor.new("hello..end..")
   encrypt.rotation
   encrypt.string_to_index
   encrypt.add_offset

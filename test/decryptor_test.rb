@@ -26,7 +26,7 @@ def test_it_can_subtract_letter_index_to_rotation
   decrypt.rotation
   decrypt.code_to_index
 
-  assert_equal [8, 5, 66, 66, 15], decrypt.subtract_offset
+  assert_equal [8, 5, 12, 12, 15], decrypt.subtract_offset
 end
 
 def test_it_can_decrypt
