@@ -1,33 +1,33 @@
+require_relative 'key'
+require_relative 'date_set'
+require 'date'
+
+
 class Encryptor
-  def initialize(string, key = 12345, date = 101317)
+  def initialize(string, key = Key.new, date = 101317)
     @string = string.split('')
-    @key =  key.to_s.split('')
-    @date = date
-    @offset_precursor = nil
-    @rot = []
+    @key =  key.instance_variable_get(:@key).to_s
+    @date = 101317
+    @rotations = []
     @alpha_index = []
     @alpha = []
     @alphabet = ["a","b","c","d","e","f","g","h","i","j",
       "k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
   end
-
-  def offset_key
-      date_squared = @date ** 2
-      @offset_precursor = date_squared.to_s.split('').last(4).to_a
-  end
   def key_date
-     @offset_precursor.each_with_index do |x,i|
-     @rot.push([@key[i],@key[i+1]].join.to_i + @offset_precursor[i].to_i)
+      @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
+      @date_last_four.each_with_index do |x,i|
+      @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
     end
-   p @rot = @rot*@string.length
+    @rotations = @rotations*@string.length
   end
 
   def string_to_index
     @string.each_with_index do |letter,index|
       @alphabet.each_with_index do |x,i|
          if @string[index] == @alphabet[i-1] %26
-           @alpha_index << i
+            @alpha_index << i
          end
       end
     end
@@ -35,7 +35,7 @@ class Encryptor
 
   def add_offset
     @alpha_index.each_with_index do |x,i|
-    @alpha.push(@alpha_index[i] + @rot[i])
+     @alpha.push(@alpha_index[i] + @rotations[i])
    end
   end
 
@@ -43,12 +43,22 @@ class Encryptor
     @alpha.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
           if  num %26 == i+1
-                x
-          end
+                 p x
+        else
+          # p num
         end
+      end
     end
   end
 end
+
+
+encrypt = Encryptor.new("end")
+# encrypt.offset_key
+encrypt.key_date
+encrypt.string_to_index
+encrypt.add_offset
+encrypt.encrypt
 
 #   if @string[index] == @alphabet[i-1]
 #     p alpha_index << @rotation_b = @rotation_b + i % 26
@@ -125,10 +135,3 @@ end
 #     offset_rot_a = @key.to_s.split('').first(2).join('').to_i
 #     p  key_rot_a + offset_rot_a
 # end
-
-encrypt = Encryptor.new("hello")
-encrypt.offset_key
-encrypt.key_date
-encrypt.string_to_index
-encrypt.add_offset
-encrypt.encrypt
