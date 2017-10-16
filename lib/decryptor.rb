@@ -11,7 +11,7 @@ class Decryptor
     @date = 101317
     @rotations = []
     @alpha_index = []
-    @alpha = []
+    @subtracted_offset = []
     @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
       'o','p','q','r','s','t','u','v','w',
     'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
@@ -34,21 +34,20 @@ class Decryptor
       end
     end
      @alpha_index
-
   end
 
   def subtract_offset
     @alpha_index.each_with_index do |x,i|
-   num = ( @alpha_index[i] - @rotations[i])
-      num = (39 - num) if num < 0
-    @alpha << num
- end
-  @alpha
+    num = ( @alpha_index[i] - @rotations[i])
+    num = (39 - num) if num < 0
+    @subtracted_offset << num
+    end
+  @subtracted_offset
   end
 
   def decrypt
     final_decryption = []
-    @alpha.each_with_index do |num, index|
+     @subtracted_offset.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
           if  num % 27 == i+1
                 final_decryption << x

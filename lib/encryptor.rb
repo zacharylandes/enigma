@@ -11,11 +11,10 @@ class Encryptor
     @date = 101317
     @rotations = []
     @alpha_index = []
-    @alpha = []
+    @added_offset = []
     @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
       'o','p','q','r','s','t','u','v','w',
     'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
-
   end
   # def load (string)
   #   # binding.pry
@@ -25,13 +24,12 @@ class Encryptor
   #    end
   # end
 
-
   def key_date
       @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
       @date_last_four.each_with_index do |x,i|
       @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
     end
-     @rotations = @rotations * @string.length
+      @rotations = @rotations * @string.length
   end
 
   def string_to_index
@@ -46,36 +44,36 @@ class Encryptor
   end
 
   def add_offset
-    @alpha_index.each_with_index do |x,i|
-     @alpha.push(@alpha_index[i] + @rotations[i])
+     @alpha_index.each_with_index do |x,i|
+     @added_offset.push(@alpha_index[i] + @rotations[i])
    end
-   @alpha
+   @added_offset
   end
 
   def encrypt
     final_encryption = []
-    @alpha.each_with_index do |num, index|
+    @added_offset.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
           if  num % 39 == i+1
                 final_encryption <<  x
-        else
+          else
           # p num
+          end
         end
-      end
     end
-     p final_encryption.join
+     final_encryption.join
   end
 
 
 end
 
-
-encrypt = Encryptor.new("hello")
-# encrypt.load('message.txt')
-encrypt.key_date
-encrypt.string_to_index
-encrypt.add_offset
-encrypt.encrypt
+#
+# encrypt = Encryptor.new("hello")
+# # encrypt.load('message.txt')
+# encrypt.key_date
+# encrypt.string_to_index
+# encrypt.added_offset
+# encrypt.encrypt
 
 #   if @string[index] == @alphabet[i-1]
 #     p alpha_index << @rotation_b = @rotation_b + i % 26
