@@ -9,7 +9,7 @@ def test_it_can_add_key_to_offset
   rotations = [16, 27, 42, 54, 16, 27, 42, 54, 16, 27, 42,
      54, 16, 27, 42, 54, 16, 27, 42, 54]
 
-  assert_equal rotations, encrypt.key_date
+  assert_equal rotations, encrypt.rotation
 
 end
 def test_it_can_find_letter_indeces
@@ -21,16 +21,15 @@ end
 
 def test_it_can_add_letter_index_to_rotation
   encrypt = Encryptor.new("hello")
-  encrypt.key_date
+  encrypt.rotation
   encrypt.string_to_index
-
   assert_equal [24, 32, 54, 66, 31], encrypt.add_offset
 end
 
 def test_it_can_encrypt
   encryption = "x5o04"
   encrypt = Encryptor.new("hello")
-  encrypt.key_date
+  encrypt.rotation
   encrypt.string_to_index
   encrypt.add_offset
 

@@ -5,8 +5,7 @@ class Key
 
   def initialize(key = @key)
     # @random = randomize
-   @key = 12345
-  #  rand(0...50000).to_s.rjust(5, '0').to_i
+   @key =  rand(0...50000).to_s.rjust(5, '0').to_i
   end
 
 end

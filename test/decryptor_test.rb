@@ -9,7 +9,7 @@ def test_it_can_add_key_to_offset
   rotations = [16, 27, 42, 54, 16, 27, 42, 54, 16, 27, 42,
      54, 16, 27, 42, 54, 16, 27, 42, 54]
 
-  assert_equal rotations, decrypt.key_date
+  assert_equal rotations, decrypt.rotation
 
 end
 def test_it_can_find_letter_indeces
@@ -23,7 +23,7 @@ end
 
 def test_it_can_subtract_letter_index_to_rotation
   decrypt = Decryptor.new("x5o04")
-  decrypt.key_date
+  decrypt.rotation
   decrypt.code_to_index
 
   assert_equal [8, 5, 66, 66, 15], decrypt.subtract_offset
@@ -32,7 +32,7 @@ end
 def test_it_can_decrypt
   decryption = "hello"
   decrypt = Decryptor.new("x5o04")
-  decrypt.key_date
+  decrypt.rotation
   decrypt.code_to_index
   decrypt.subtract_offset
 

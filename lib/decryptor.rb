@@ -17,7 +17,7 @@ class Decryptor
     'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
   end
 
-  def key_date
+  def rotation
       @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
       @date_last_four.each_with_index do |x,i|
       @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
@@ -63,7 +63,7 @@ end
 
 decrypt = Decryptor.new("x5o04")
 # decrypt.offset_key
-decrypt.key_date
+decrypt.rotation
 decrypt.code_to_index
 decrypt.subtract_offset
 decrypt.decrypt
