@@ -12,16 +12,18 @@ class Decryptor
     @rotations = []
     @alpha_index = []
     @alpha = []
-    @alphabet = ["a","b","c","d","e","f","g","h","i","j",
-      "k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+      'o','p','q','r','s','t','u','v','w',
+    'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
   end
-# def get_key
-#   @code.each_with_index do |x,i|
-#     @alphabet.each_with_index do |num, index|
-#
-#     end
-#   end
-# end
+def get_key
+  @code.each_with_index do |x,i|
+    @alphabet.each_with_index do |num, index|
+
+
+    end
+  end
+end
 
 
   def key_date
@@ -35,7 +37,7 @@ class Decryptor
   def code_to_index
     @code.each_with_index do |letter,index|
       @alphabet.each_with_index do |x,i|
-         if @code[index] == @alphabet[i-1] %26
+         if @code[index] == @alphabet[i-1] %39
             p @alpha_index << i
          end
       end
@@ -43,8 +45,11 @@ class Decryptor
   end
 
   def add_offset
-    @alpha_index.each_with_index do |x,i|
-   num = ( @alpha_index[i] - @rotations[i]) % 26
+    @alpha_index[0]
+
+
+    .each_with_index do |x,i|
+   num = ( @alpha_index[i] - @rotations[i]) % 39
       num = 26 - num if num < 0
     @alpha <<  num
  end
@@ -54,7 +59,7 @@ class Decryptor
   def decrypt
     @alpha.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
-          if  num %26 == i+1
+          if  num %39 == i+1
                  x
         else
           # p num
