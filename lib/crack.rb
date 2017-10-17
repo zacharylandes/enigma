@@ -5,10 +5,10 @@ require 'date'
 
 
 class Decryptor
-  def initialize(string, key = Key.new, date = 101317)
+  def initialize(string, date = 101317)
     @code = string.split('')
-    @key =  key.instance_variable_get(:@key).to_s
-    @date = 101317
+    # @key =  key.instance_variable_get(:@key).to_s
+    @date = 100000
     @rotations = []
     @alpha_index = []
     @alpha = []
@@ -17,9 +17,7 @@ class Decryptor
     'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
   end
 def get_key
-  @code.each_with_index do |x,i|
-    @alphabet.each_with_index do |num, index|
-
+    p  @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
 
     end
   end

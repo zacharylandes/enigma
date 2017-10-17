@@ -1,66 +1,79 @@
 require_relative 'key'
-require_relative 'date_set'
+# require_relative 'today_date'
 require 'date'
 # require_relative 'message'
 require 'pry'
-
 class Encryptor
-  def initialize(string, key = Key.new, date = 101317)
-    @string = string.split('')
-    @key =  key.instance_variable_get(:@key).to_s
-    @date = 101317
+  attr_reader :date, :key
+
+  def initialize(my_message, key = Key.new, date = @date)
+    @my_message = my_message.split('')
+    @key =  "91382"
+    @date = 151017  #nDate.today.strftime("%m%e%y").split("").join('').to_i
     @rotations = []
     @alpha_index = []
-    @added_offset = []
+    @calculated_index = []
     @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
       'o','p','q','r','s','t','u','v','w',
-    'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
+    'x','y','z','1','2','3','4','5','6','7','8','9','0',' ','.',',']
   end
-  # def load (string)
-  #   # binding.pry
-  #   file = File.open(string, "r")
-  #    while (@line = file.gets)
-  #     p @string = @line.split('')
-  #    end
-  # end
-
+def get_offset
+    @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
+end
   def rotation
-      @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
+      # @key = key.key
       @date_last_four.each_with_index do |x,i|
       @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
     end
-      @rotations = @rotations * @string.length
+       @rotations = @rotations * @my_message.length
   end
 
   def string_to_index
-    @string.each_with_index do |letter,index|
+    @my_message.each_with_index do |letter,index|
       @alphabet.each_with_index do |x,i|
-         if @string[index] == @alphabet[i-1] % 39
+         if @my_message[index] == @alphabet[i-1] % 39
             @alpha_index << i
          end
       end
     end
-    @alpha_index
+   @alpha_index
   end
 
   def add_offset
      @alpha_index.each_with_index do |x,i|
-     @added_offset.push(@alpha_index[i] + @rotations[i])
+     @calculated_index.push(@alpha_index[i] + @rotations[i+1])
    end
-   @added_offset
+   @calculated_index
   end
 
-  def encrypt
+  def subtract_offset
+    @alpha_index.each_with_index do |x,i|
+    num = ( @alpha_index[i] - @rotations[i])
+    @calculated_index << num %39
+    end
+    @calculated_index
+  end
+
+  def crypt
     final_encryption = []
-    @added_offset.each_with_index do |num, index|
+    @calculated_index.each_with_index do |num, index|
         @alphabet.each_with_index do |x,i|
           if  num % 39 == i+1
-                final_encryption <<  x
+              final_encryption << x
           end
         end
     end
-     final_encryption.join
+       p final_encryption.join
   end
 
 
 end
+
+#
+# encryption = "x5o04"
+encrypt = Encryptor.new("hello..end..")
+encrypt.get_offset
+encrypt.rotation
+encrypt.string_to_index
+encrypt.add_offset
+encrypt.crypt
