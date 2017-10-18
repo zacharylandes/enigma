@@ -1,152 +1,102 @@
+require 'pry'
+#
+#
+# index value  of code - index value of period = rotation at that index
+# subtract rotation from the index value of code
+
 
 require_relative 'key'
-require_relative 'date_set'
+# require_relative 'today_date'
 require 'date'
 
 
 class Decryptor
-  def initialize(string, date = 101317)
+  def initialize(string, key = Key.new, date = @date)
     @code = string.split('')
-    # @key =  key.instance_variable_get(:@key).to_s
-    @date = 100000
-    @rotations = []
+    @end_ary = [38,38,5,14,4,38,38]
+    @key_guess = [0,0,0,0]
     @alpha_index = []
-    @alpha = []
+    @subtracted_offset = []
     @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
       'o','p','q','r','s','t','u','v','w',
-    'x','y','z','0','1','2','3','4','5','6','7','8','9',' ','.',',']
-  end
-def get_key
-    p  @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
-
-    end
-  end
-end
-
-
-  def key_date
-      @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
-      @date_last_four.each_with_index do |x,i|
-      @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
-    end
-    @rotations = @rotations*@code.length
+    'x','y','z','1','2','3','4','5','6','7','8','9','0',' ','.',',']
   end
 
   def code_to_index
     @code.each_with_index do |letter,index|
       @alphabet.each_with_index do |x,i|
          if @code[index] == @alphabet[i-1] %39
-            p @alpha_index << i
+            @alpha_index << i
+          end
          end
-      end
     end
+  p  @alpha_index
   end
-
-  def add_offset
-    @alpha_index[0]
-
-
-    .each_with_index do |x,i|
-   num = ( @alpha_index[i] - @rotations[i]) % 39
-      num = 26 - num if num < 0
-    @alpha <<  num
- end
-# p @alpha
+#
+#
+def find_rotation
+  rot = []
+  i = -1
+ while i > -5
+     rot << @alpha_index[i].to_i - @end_ary[i].to_i
+  i-=1
+# end
+end
+p  @rot = rot * @code.length
+end
+def subtract_rotation
+  @final_index = []
+  @alpha_index.reverse.each_with_index do  |x,i|
+    @final_index << (x - @rot[i].to_i) %39
   end
-
-  def decrypt
-    @alpha.each_with_index do |num, index|
-        @alphabet.each_with_index do |x,i|
-          if  num %39 == i+1
-                 x
-        else
-          # p num
+  p @final_index
+end
+def convert_to_letters
+  final = []
+  @final_index.each_with_index do |letter,index|
+    @alphabet.each_with_index do |x,i|
+       if letter == i+1
+          final << x
         end
-      end
-    end
+       end
   end
+p final = final.reverse.join
+
+end
+#   def subtract_offset
+#     @alpha_index.each_with_index do |x,i|
+#       num = (@alpha_index[i] - @rotations[i+1]) % 39
+#       @subtracted_offset << num
+#     end
+#       @subtracted_offset
+#
+# end
+#
+#   def decrypt
+#     @final_decryption = []
+#      @subtracted_offset.each_with_index do |num, index|
+#         @alphabet.each_with_index do |x,i|
+#             if num % 39  == i+1
+#               final_decryption << x
+#             end
+#           end
+#     end
+#     p  @final_decryption.join
+# end
+# def guess_again
+#   if @final_decryption.join == "..end..."
+#   else
+# end end
+#
+# end
 end
 
 
-
-#   if @string[index] == @alphabet[i-1]
-#     p alpha_index << @rotation_b = @rotation_b + i % 26
-#      return
-#    end
-# if @string[index] == @alphabet[i-1]
-#   p alpha_index << @rotation_c = @rotation_c + i % 26
-#    return
-#  end
-# if @string[index] == @alphabet[i-1]
-#   p alpha_index << @rotation_d = @rotation_d + i % 26
-#    return
-#   end
-
-# @string.each_with_index do |num, index|
-# @alphabet.each_with_index do |x,i|
-#   if @string[index] == @alphabet[i-1]
-#      p alpha_index << @rotation_b = @rotation_b + i % 26
-#   end
-# end
-# end
-# @string.each_with_index do |num, index|
-# @alphabet.each_with_index do |x,i|
-#   if @string[index] == @alphabet[i-1]
-#      p @rotation_b = @rotation_b + i % 26
-#   end
-# end
-# end
-# @string.each_with_index do |num, index|
-# @alphabet.each_with_index do |x,i|
-#   if @string[index] == @alphabet[i-1]
-#      p @rotation_c = @rotation_c + i % 26
-#   end
-# end
-# end
-# @string.each_with_index do |num, index|
-# @alphabet.each_with_index do |x,i|
-#   if @string[index] == @alphabet[i-1]
-#      p @rotation_d = @rotation_d + i % 26
-#   end
-# end
-# end
-
-  # @alphabet.each_with_index do |x,i|
-  #   if @string[1] == @alphabet[i-1]
-  #     p @alphabet[i-1+@rotation_b]
-  #   end
-  #     end
-  #   @alphabet.each_with_index do |x,i|
-  #     if @string[2] == @alphabet[i-1]
-  #       p @alphabet[i-1+@rotation_c]
-  #     end
-  #       end
-  # @alphabet.each_with_index do |x,i|
-  #   if @string[3] == @alphabet[i-1]
-  #     p @alphabet[i-1+@rotation_d]
-  #   end
-  #     end
-  # @alphabet.each_with_index do |x,i|
-  #   if @string[4] == @alphabet[i-1]
-  #     p @alphabet[i-1+@rotation_a]
-  #   end
-  #     end
-  # end
-
-
-#    @offset
-#    key_rot_a = @offset[0].to_i
-#     offset_rot_a = @key.to_s.split('').first(2).join('').to_i
-#     p  key_rot_a + offset_rot_a
-# enddef rot_a
-#    @offset
-#    key_rot_a = @offset[0].to_i
-#     offset_rot_a = @key.to_s.split('').first(2).join('').to_i
-#     p  key_rot_a + offset_rot_a
-#
-decrypt = Decryptor.new("xfbne")
-# decrypt.get_key
-decrypt.key_date
+decrypt = Decryptor.new("wly34flv3klp")
+# decrypt.key_guess
+# decrypt.rotation
 decrypt.code_to_index
-decrypt.add_offset
-decrypt.decrypt
+decrypt.find_rotation
+decrypt.subtract_rotation
+decrypt.convert_to_letters
+# decrypt.decrypt

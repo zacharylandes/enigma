@@ -6,65 +6,76 @@ require 'date'
 
 class Decryptor
   def initialize(string, key = Key.new, date = @date)
-    @code = string.split('')
+    @my_message = string.split('')
     @key =  "91382"
     @date = 151017
-    @rotations = []
+    @rotation = []
     @alpha_index = []
-    @subtracted_offset = []
+    @calculated_index = []
+    @alpha_index_first = []
+    @final_decryption = []
     @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
       'o','p','q','r','s','t','u','v','w',
     'x','y','z','1','2','3','4','5','6','7','8','9','0',' ','.',',']
   end
 
+  def find_last_four
+      @last_four = (@date ** 2).to_s.split('').last(4).to_a
+  end
+
   def rotation
-     @key
-      @date_last_four = (@date ** 2).to_s.split('').last(4).to_a
-      @date_last_four.each_with_index do |x,i|
-      @rotations.push([@key[i],@key[i+1]].join.to_i + @date_last_four[i].to_i)
+    @last_four.each_with_index do |x,i|
+    @rotation.push([@key[i],@key[i+1]].join.to_i + @last_four[i].to_i)
     end
-    p @rotations = @rotations*@code.length
+    @rot_with_key = @rotation * @my_message.length
+    @rotation
   end
 
   def code_to_index
-    @code.each_with_index do |letter,index|
+    @my_message.each_with_index do |letter,index|
       @alphabet.each_with_index do |x,i|
-         if @code[index] == @alphabet[i-1] %39
-            @alpha_index << i
-         end
+          @alpha_index << i  if @my_message[index] == @alphabet[i-1]%39
       end
     end
-    p  @alpha_index
+    @alpha_index
+  end
+
+  def add_offset
+     @alpha_index.each_with_index do |x,i|
+     @calculated_index.push(@alpha_index[i] + @rot_with_key[i+1])
+    end
   end
 
   def subtract_offset
-    i =0
     @alpha_index.each_with_index do |x,i|
-    num = ( @alpha_index[i] - @rotations[i+1])
-    @subtracted_offset << num % 39
+      num = (@alpha_index[i] - @rot_with_key[i+1]) % 39
+      @calculated_index << num
     end
-  p  @subtracted_offset
   end
 
-  def decrypt
-    final_decryption = []
-     @subtracted_offset.each_with_index do |num, index|
-        @alphabet.each_with_index do |x,i|
-          if num == 0
-                final_decryption << x
-          elsif  num % 39  == i+1
-            final_decryption << x
-        end
+  def first_num
+      @first_num = @alpha_index_first[0] - @rot_with_key[1] % 39
+      @alphabet.each_with_index do |x,i|
+        @final_decryption << x if @first_num == i+1
       end
-    end
-    p  final_decryption.join
   end
+
+  def crypt
+     @calculated_index.each_with_index do |num, index|
+        @alphabet.each_with_index do |x,i|
+          @final_decryption << x if num % 39  == i+1
+        end
+     end
+       @final_decryption.join
+   end
 end
 
 
-decrypt = Decryptor.new("0yv5veovteakcdkz8e7yteov81")
+decrypt = Decryptor.new("hello..end..")
 # decrypt.offset_key
+decrypt.find_last_four
 decrypt.rotation
 decrypt.code_to_index
-decrypt.subtract_offset
-decrypt.decrypt
+decrypt.add_offset
+# decrypt.first_num
+decrypt.crypt

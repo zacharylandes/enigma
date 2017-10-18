@@ -12,7 +12,3 @@ class Key
   # end
 
 end
-
-#
-# rando = Key.new
-#   rando.instance_variable_get(:@key)
