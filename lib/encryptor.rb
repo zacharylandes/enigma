@@ -1,77 +1,70 @@
-
 require_relative 'key'
 require 'date'
 
 
 class Encryptor
-  def initialize(string, key = Key.new, date = @date)
-    @my_message = string.split('')
-    @key =  "91382"
-    @date = 151017 #Date.today.strftime("%m%e%y").split("").join('').to_i
-    @rotation = []
-    @alpha_index = []
+  attr_reader :alphabet
+  def initialize(string, key, date = @date)
+    @my_message = string
+    @key = key
+    @date = date
     @calculated_index = []
-    # @alpha_index_first = []
-    @final_decryption = []
-    @alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
-      'o','p','q','r','s','t','u','v','w',
-    'x','y','z','1','2','3','4','5','6','7','8','9','0',' ','.',',']
+  end
+
+  def alphabet
+   ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+    'o','p','q','r','s','t','u','v','w',
+  'x','y','z','1','2','3','4','5','6','7','8','9','0',' ','.',',']
+  end
+
+  def date_conversion
+    @date = Date.today.strftime("%e%m%y").split("").join('').to_i
+  end
+
+  def my_message
+    @my_message.downcase.split('')
   end
 
   def find_last_four
-    @last_four = (@date ** 2).to_s.split('').last(4).to_a
+     (date_conversion ** 2).to_s.split('').last(4).to_a
   end
 
   def rotation
-    @last_four.each_with_index do |x,i|
-     @rotation.push([@key[i],@key[i+1]].join.to_i + @last_four[i].to_i)
+    find_last_four.each_with_index.map do |x,i|
+     [@key[i],@key[i+1]].join.to_i + find_last_four[i].to_i
     end
-    @rot_with_key = @rotation * @my_message.length
-    @rotation
   end
 
   def code_to_index
-    @my_message.each_with_index do |letter,index|
-      @alphabet.each_with_index do |x,i|
-        @alpha_index << i  if @my_message[index] == @alphabet[i-1] %39
+    alpha_index=[]
+    my_message.each_with_index.map do |letter,index|
+      alphabet.each_with_index.map do |x,i|
+        alpha_index << i  if my_message[index] == alphabet[i-1] %39
       end
     end
-    @alpha_index
+     alpha_index
   end
 
   def add_offset
-     @alpha_index.each_with_index do |x,i|
-     @calculated_index.push(@alpha_index[i] + @rot_with_key[i+1])
+    rot_key =  rotation * 10
+    code_to_index.each_with_index do |x,i|
+      @calculated_index.push(code_to_index[i] + rot_key[i+1])
     end
   end
 
   def subtract_offset
-    @alpha_index.each_with_index do |x,i|
-      num = (@alpha_index[i] - @rot_with_key[i+1]) % 39
+    rot_key =  rotation * 10
+    code_to_index.each_with_index do |x,i|
+      num = (code_to_index[i] - rot_key[i+1]) % 39
       @calculated_index << num
     end
   end
 
-  def first_num
-      @first_num = @alpha_index_first[0] - @rot_with_key[1] % 39
-      @alphabet.each_with_index do |x,i|
-        @final_decryption << x if @first_num == i+1
-      end
-  end
-
   def crypt
-     @calculated_index.each_with_index do |num, index|
-        @alphabet.each_with_index do |x,i|
-          @final_decryption << x if num % 39  == i+1
-        end
-     end
-    p @final_decryption = @final_decryption.join
-   end
+    @calculated_index.each_with_index.map do |num, index|
+      alphabet.each_with_index.map do |x,i|
+        x if num % 39  == i+1
+      end
+    end.join
+  end
 end
-#
-e = Encryptor.new("wly34flv3klp")
-e.find_last_four
-e.rotation
-e.code_to_index
-e.subtract_offset
-e.crypt

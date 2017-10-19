@@ -1,40 +1,59 @@
-require 'minitest'
-require 'minitest/autorun'
-require 'minitest/pride'
-require "../lib/encryptor"
+require_relative 'test_helper'
+require "./lib/encryptor"
 
 class EncryptorTest < Minitest::Test
-def test_it_can_add_key_to_offset
-  encrypt = Encryptor.new("hello")
-  rotations = [16, 27, 42, 54, 16, 27, 42, 54, 16, 27, 42,
-     54, 16, 27, 42, 54, 16, 27, 42, 54]
 
-  assert_equal rotations, encrypt.rotation
+  def test_it_can_square_the_last_four
+    encrypt = Encryptor.new("wly34flv3klp", "12345", 191017)
+    encrypt.find_last_four
 
-end
-def test_it_can_find_letter_indeces
-letter_indeces = [8, 5, 12, 12, 15]
-encrypt = Encryptor.new("hello")
+    assert_equal ["4","2","8","9"], encrypt.find_last_four
+  end
 
-assert_equal letter_indeces, encrypt.string_to_index
-end
+  def test_it_can_add_key_to_offset
+    encrypt = Encryptor.new("wly34flv3klp", "12345")
+    rotations = [16, 25, 42, 54]
 
-def test_it_can_add_letter_index_to_rotation
-  encrypt = Encryptor.new("hello")
+    assert_equal rotations, encrypt.rotation
+  end
+
+  def test_it_can_find_letter_indeces
+  letter_indeces = [23, 12, 25, 29, 30, 6, 12, 22, 29, 11, 12, 16]
+  encrypt = Encryptor.new("wly34flv3klp","12345")
   encrypt.rotation
-  encrypt.string_to_index
-  assert_equal [24, 32, 54, 66, 31], encrypt.add_offset
-end
 
-def test_it_can_encrypt
-  encryption = "x5o04zbt34bn"
-  encrypt = Encryptor.new("hello..end..")
-  encrypt.rotation
-  encrypt.string_to_index
-  encrypt.add_offset
+  assert_equal letter_indeces, encrypt.code_to_index
+  end
 
-  assert_equal encryption, encrypt.encrypt
+  def test_it_can_subtract_letter_index_from_rotation
 
-end
+    letter_indeces = [12, 1, 11, 19, 4, 13]
+    decrypt = Encryptor.new("laksdm", "34543")
+    decrypt.rotation
+    decrypt.code_to_index
+
+    assert_equal letter_indeces , decrypt.subtract_offset
+  end
+
+  def test_it_can_encrypt
+    encryption = "nfc5u3xte3r"
+    encrypt = Encryptor.new("hello..end..", "54321")
+    encrypt.rotation
+    encrypt.code_to_index
+    encrypt.add_offset
+
+    assert_equal encryption, encrypt.crypt
+
+  end
+
+  def test_it_can_decrypt
+    decryption = "yo yo my bud bud..end.."
+    decrypt = Encryptor.new("vz4mlifm8mn58mn59j baj5", "23423")
+    decrypt.rotation
+    decrypt.code_to_index
+    decrypt.subtract_offset
+
+    assert_equal decryption, decrypt.crypt
+  end
 
 end

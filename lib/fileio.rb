@@ -1,5 +1,5 @@
 
 class FileIO
-def initialize
-end
+  def initialize
+  end
 end
